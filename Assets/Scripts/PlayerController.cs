@@ -18,6 +18,10 @@ public class PlayerController : MonoBehaviour
     public float speed = 5;
     [Header("突刺最大距離"), Range(5f,15f)]
     public float slashDis = 8;
+    [Header("突刺次數")]
+    public int slashNum = 4;
+    [HideInInspector]
+    public float slashEnergy, maxSlashEnergy;
     [HideInInspector]
     public Vector2 direction = Vector2.zero;
     [HideInInspector]
@@ -33,18 +37,25 @@ public class PlayerController : MonoBehaviour
         sr = this.GetComponent<SpriteRenderer>();
         cam = Camera.main;
         previousPos = this.transform.position;
+        maxSlashEnergy = 15 * slashNum;
+        slashEnergy = 15 * slashNum;
     }
 
     // Update is called once per frame
     void Update()
     {
         movePos = RayCasting();
-        if (Input.GetMouseButtonDown(0) && isSlashing == false)
+        if (Input.GetMouseButtonDown(0) && slashEnergy >= 15 && isSlashing == false)
             StartCoroutine(Slash(movePos));
         if (isSlashing == false)
             rb.velocity = Moving();
         previousPos = this.transform.position;
         SetAnimAndFlip();
+    }
+
+    private void FixedUpdate()
+    {
+        slashEnergy = Mathf.Clamp(slashEnergy + 10f * Time.fixedDeltaTime, 0, maxSlashEnergy);
     }
 
     Vector2 Moving()
@@ -84,12 +95,28 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Slash(Vector3 pos)
     {
-        pos += new Vector3(0, 0.5f, 0);
-        float time = 0.1f, angle = (((pos - rb.transform.position).y >= 0)? Vector2.Angle(Vector2.right, (pos - rb.transform.position)) : -Vector2.Angle(Vector2.right, (pos - rb.transform.position)));
+        slashEnergy -= 15;
         isSlashing = true;
-        time = 0.1f * Mathf.Min((pos - rb.transform.position).magnitude / slashDis, 1);
-        GameObject slash = GameObject.Instantiate(slashAnim, (pos - new Vector3(0, 0.3f, 0) + rb.transform.position) / 2, Quaternion.Euler(0,0,135 + angle));
+        Vector3 currentPos = this.transform.position;
+
+        /*計算斬擊時間並給予敵人傷害*/
+        float time = 0.1f * Mathf.Min((pos - currentPos).magnitude / slashDis, 1);
+        RaycastHit2D[] hits = Physics2D.LinecastAll(currentPos, pos, 1 << 9);
+        foreach(RaycastHit2D hit in hits)
+        {
+            float hitTime = Mathf.Clamp(0.1f * ((hit.transform.position - currentPos).magnitude / (pos - currentPos).magnitude), 0, 0.1f); 
+            EnemyDamage enemy = hit.collider.gameObject.GetComponent<EnemyDamage>();
+            StartCoroutine(enemy.getHit(this.transform.position, hitTime));
+        }
+
+        /*計算斬擊特效的生成角度*/
+        float angle = (((pos - currentPos).y >= 0) ? Vector2.Angle(Vector2.right, (pos - currentPos)) : -Vector2.Angle(Vector2.right, (pos - currentPos)));
+        GameObject slash = GameObject.Instantiate(slashAnim, (pos - new Vector3(0, 0.3f, 0) + currentPos) / 2, Quaternion.Euler(0,0,135 + angle));
+
+        /* 回推軌跡並移動 */
+        pos += new Vector3(0, 0.5f, 0);
         rb.transform.DOMove(pos, time);
+
         yield return new WaitForSeconds(time);
         rb.velocity = Vector2.zero;
         isSlashing = false;
