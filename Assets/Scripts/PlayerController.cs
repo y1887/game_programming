@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private CircleCollider2D circle;
     private Animator anim;
-    private SpriteRenderer sr;
+    private SpriteRenderer sr, xray;
     private Camera cam;
 
     private bool isSlashing = false;
@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
         circle = this.GetComponent<CircleCollider2D>();
         anim = this.GetComponent<Animator>();
         sr = this.GetComponent<SpriteRenderer>();
+        xray = this.transform.Find("X-Ray").gameObject.GetComponent<SpriteRenderer>();
         cam = Camera.main;
         previousPos = this.transform.position;
         maxSlashEnergy = 15 * slashNum;
@@ -55,7 +56,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        slashEnergy = Mathf.Clamp(slashEnergy + 10f * Time.fixedDeltaTime, 0, maxSlashEnergy);
+        slashEnergy = Mathf.Clamp(slashEnergy + 20f * Time.fixedDeltaTime, 0, maxSlashEnergy);
     }
 
     Vector2 Moving()
@@ -76,6 +77,7 @@ public class PlayerController : MonoBehaviour
     {
         if (rb.velocity.x != 0)
             sr.flipX = ((rb.velocity.x > 0) ? false : true);
+        xray.flipX = sr.flipX;
         anim.SetFloat("Velocity", rb.velocity.magnitude);
     }
 

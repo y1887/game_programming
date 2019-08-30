@@ -21,6 +21,6 @@ public class FollowPosition : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.transform.position = 0.2f * this.transform.position + 0.8f * player.movePos;
+        this.transform.position = player.movePos;
     }
 }
