@@ -16,4 +16,6 @@ public class Direction
     public DIR direction = 0;
     [Header("接口位置")]
     public int position = 0;
+    [HideInInspector]
+    public int connectedAmount = 0;
 }

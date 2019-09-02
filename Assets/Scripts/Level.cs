@@ -9,6 +9,8 @@ public class Level : MonoBehaviour
     public int X, Y;
     [Header("關卡接口")]
     public Direction[] directions;
+    [HideInInspector]
+    public Vector2Int PosInArray = new Vector2Int(-1, -1);
     // Start is called before the first frame update
     void Start()
     {
