@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class Level : MonoBehaviour
 {
-    public GameObject map, enemy;
+    public GameObject map, enemy, miniMap;
     [Header("關卡大小")]
     public int X, Y;
     [Header("關卡接口")]
     public Direction[] directions;
+    public GameObject[] mapSprite;
     [HideInInspector]
     public Vector2Int PosInArray = new Vector2Int(-1, -1);
+    [HideInInspector]
+    public int connection = 0;
     // Start is called before the first frame update
     void Start()
     {

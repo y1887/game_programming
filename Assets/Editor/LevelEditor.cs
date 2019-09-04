@@ -175,6 +175,27 @@ public class LevelEditor : Editor
             else
                 dir.position = EditorGUILayout.IntSlider(dir.position, 0, level.Y - 1);
         }
+        if (GUILayout.Button("Create MiniMap"))
+            MiniMap();
+    }
+
+    void MiniMap()
+    {
+        Level level = (Level)target;
+        GameObject map = level.map, miniMap = level.miniMap;
+        while (miniMap.transform.childCount != 0)
+        {
+            DestroyImmediate(miniMap.transform.GetChild(0).gameObject);
+        }
+        foreach (Transform trans in map.transform)
+        {
+            if (trans.gameObject.CompareTag("Wall") && (trans.gameObject.name == "Wall" || trans.gameObject.name == "Wall-HalfCollider"))
+                Instantiate(level.mapSprite[0], trans.position - new Vector3(500, 1, 0), Quaternion.identity, miniMap.transform);
+            else if (trans.gameObject.CompareTag("Wall"))
+                Instantiate(level.mapSprite[0], trans.position - new Vector3(500, 0, 0), Quaternion.identity, miniMap.transform);
+            else if (trans.gameObject.CompareTag("Untagged"))
+                Instantiate(level.mapSprite[1], trans.position - new Vector3(500, 0, 0), Quaternion.identity, miniMap.transform);
+        }
     }
 
     void DrawRect(float posX, float posY, float halfX, float halfY, Color color)
