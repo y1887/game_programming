@@ -12,13 +12,6 @@ public class SpawnPlayer : MonoBehaviour
     {
         generator = GameObject.FindGameObjectWithTag("LevelGenerator").GetComponentInParent<LevelGenerator>();
         if (generator != null)
-            StartCoroutine(Spawn());
-    }
-
-    IEnumerator Spawn()
-    {
-        Debug.Log("Spawning");
-        yield return new WaitUntil(() => (int)generator.currentStatus > (int)LevelGenerator.GeneratingStatus.Place_Levels);
-        Instantiate(player, this.transform.position, Quaternion.identity);
+            Instantiate(player, this.transform.position, Quaternion.identity);
     }
 }

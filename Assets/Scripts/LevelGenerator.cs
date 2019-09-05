@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -14,7 +15,8 @@ public class LevelGenerator : MonoBehaviour
         Construct_Links = 3,    //決定關卡之間的連結
         Find_Paths = 4,         //根據所給的連結找路徑(用A*)
         Build_Paths = 5,        //生成路徑
-        Final_Makeup = 6        //把沒用到的接口補起來
+        Final_Makeup = 6,       //把沒用到的接口補起來
+        Finish = 7              //結束
     }
     [Header("關卡數量限制"), Range(7,15)]
     public int minMap = 7, maxMap = 7;
@@ -36,6 +38,8 @@ public class LevelGenerator : MonoBehaviour
     private Queue<Vector4> linkConstructor = new Queue<Vector4>();  //(a,b,c,d) => "從第a號關卡的第b號接口做一條路到第c號關卡的第d號接口"
     private Queue<Vector2Int> PathCoordinate = new Queue<Vector2Int>(); //負責儲存那些被標記成道路的座標
     private Stack<Vector4> checkDir = new Stack<Vector4>();     //(a,b,c,d)，a代表第幾個被生成的物件，b和c分別代表該物件的x,y座標，d代表要檢查的生成方向
+    [HideInInspector]
+    public int minX = int.MaxValue, maxX = int.MinValue, minY = int.MaxValue, maxY = int.MinValue;
 
     void Start()
     {
@@ -196,6 +200,10 @@ public class LevelGenerator : MonoBehaviour
                     from += new Vector2Int(-1, 0);
                 else if (rightCost == bestCost)
                     from += new Vector2Int(1, 0);
+                minX = ((from.x < minX) ? from.x : minX);
+                minY = ((from.y < minY) ? from.y : minY);
+                maxX = ((from.x > maxX) ? from.x : maxX);
+                maxY = ((from.y > maxY) ? from.y : maxY);
             }
             if(map[from.x,from.y] != 1)
                 PathCoordinate.Enqueue(from);
@@ -258,10 +266,25 @@ public class LevelGenerator : MonoBehaviour
                     Instantiate(makeUp[k], Index2Pos(ConnectionPos(i, j), 1, 1), Quaternion.identity);
             }
         }
+        StartCoroutine(Finish());
+    }
+
+    IEnumerator Finish() //步驟7
+    {
+        yield return new WaitForSeconds(1.5f);
+        currentStatus = GeneratingStatus.Finish;
     }
 
     private void PlaceLevelSetup(int index, Vector2Int PlacePos) //步驟2會用到
     {
+        if (PlacePos.x < minX)
+            minX = PlacePos.x;
+        if (PlacePos.y < minY)
+            minY = PlacePos.y;
+        if (PlacePos.x + lvInform[index].X - 1 > maxX)
+            maxX = PlacePos.x + lvInform[index].X - 1;
+        if (PlacePos.y + lvInform[index].Y - 1 > minY)
+            maxY = PlacePos.y + lvInform[index].X - 1;
         GameObject newGO = Instantiate(lvToPut[index], Index2Pos(PlacePos, lvInform[index].X, lvInform[index].Y), Quaternion.identity);
         lvToPut[index] = newGO;
         lvInform[index] = lvToPut[index].GetComponent<Level>();
@@ -436,5 +459,12 @@ public class LevelGenerator : MonoBehaviour
     private Vector3 Index2Pos(Vector2 index, int subLvX, int subLvY) //步驟2，6會用到
     {
         return new Vector3((index.x - Mathf.FloorToInt((float)mapX / 2f) + 0.5f * (float)subLvX) * 4, -(index.y - Mathf.FloorToInt((float)mapY / 2f) + 0.5f * (float)subLvY) * 4, 0);
-    }  
+    }
+    
+    public Vector2 BigMapPos()
+    {
+        Vector3 min = Index2Pos(new Vector2(minX, minY), 1, 1);
+        Vector3 max = Index2Pos(new Vector2(maxX, maxY), 1, 1);
+        return new Vector2((min.x + max.x) / 2f, (min.y + max.y) / 2f);
+    }
 }

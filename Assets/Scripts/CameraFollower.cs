@@ -21,6 +21,8 @@ public class CameraFollower : MonoBehaviour
             player = GameObject.FindGameObjectWithTag("Player");
             controller = player.GetComponent<PlayerController>();
         }
+        else
+            StartCoroutine(FindPlayer());
     }
 
     // Update is called once per frame
@@ -32,10 +34,17 @@ public class CameraFollower : MonoBehaviour
             Vector2 newPos = Vector2.Lerp(previousPos, player.transform.position, lerp);
             cam.transform.position = new Vector3(newPos.x, newPos.y, cam.transform.position.z);
         }
-        else
+    }
+
+    IEnumerator FindPlayer()
+    {
+        yield return new WaitUntil(() => (int)generator.currentStatus >= (int)LevelGenerator.GeneratingStatus.Final_Makeup);
+        while(player == null)
         {
             player = GameObject.FindGameObjectWithTag("Player");
-            controller = player.GetComponent<PlayerController>();
+            yield return null;
         }
+        cam.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, cam.transform.position.z);
+        controller = player.GetComponent<PlayerController>();
     }
 }
