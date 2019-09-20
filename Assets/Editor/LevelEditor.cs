@@ -101,25 +101,8 @@ public class LevelEditor : Editor
                 break;
         }
         GUILayout.EndHorizontal();
-        RandomTiles randomTiles = null;
-        if(selectedPrefab != null)
-            randomTiles = selectedPrefab.GetComponent<RandomTiles>();
-        GUILayout.BeginHorizontal();
         string boxstr = "Level Edit Mode : " + ((selectedPrefab == null) ? "No prefab selected" : selectedPrefab.name);
         GUILayout.Box(boxstr);
-        if (randomTiles != null)
-        {
-            randomTiles.isRand = EditorGUILayout.Toggle("Random Tile?",randomTiles.isRand);
-            if(randomTiles.isRand == false)
-            {
-                string[] str = new string[randomTiles.tile.All.Length];
-                for (int i = 0; i < randomTiles.tile.All.Length; i++)
-                    str[i] = randomTiles.tile.All[i].name;
-                tileIndex = EditorGUILayout.Popup(tileIndex, str);
-                selectedPrefab.GetComponent<SpriteRenderer>().sprite = randomTiles.tile.All[tileIndex];
-            }
-        }
-        GUILayout.EndHorizontal();
         GUILayout.EndArea();
         /*此段以上負責生成SceneGUI*/
 
@@ -175,11 +158,11 @@ public class LevelEditor : Editor
             else
                 dir.position = EditorGUILayout.IntSlider(dir.position, 0, level.Y - 1);
         }
-        if (GUILayout.Button("Create MiniMap"))
-            MiniMap();
+        /*if (GUILayout.Button("Create MiniMap"))
+            MiniMap();*/
     }
 
-    void MiniMap()
+    /*void MiniMap()
     {
         Level level = (Level)target;
         GameObject map = level.map, miniMap = level.miniMap;
@@ -196,7 +179,7 @@ public class LevelEditor : Editor
             else if (trans.gameObject.CompareTag("Untagged"))
                 Instantiate(level.mapSprite[1], trans.position - new Vector3(500, 0, 0), Quaternion.identity, miniMap.transform);
         }
-    }
+    }*/
 
     void DrawRect(float posX, float posY, float halfX, float halfY, Color color)
     {
