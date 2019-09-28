@@ -11,7 +11,7 @@ public class LevelEditor : Editor
     private GameObject[] tiles, monsters;
     private string[] tileNames, monsterNames, categories = {"None", "Tiles", "Monsters"};
 
-    private int category = 0, preCate = 0, index = 0, tileIndex = 0;
+    private int category = 0, preCate = 0, index = 0;
     private GameObject selectedPrefab;
 
     private void OnEnable()
@@ -20,7 +20,6 @@ public class LevelEditor : Editor
         category = 0;
         preCate = 0;
         index = 0;
-        tileIndex = 0;
         selectedPrefab = null;
         tiles = Resources.LoadAll<GameObject>("Prefab(LE)/Tiles");
         monsters = Resources.LoadAll<GameObject>("Prefab(LE)/Monsters");
@@ -106,6 +105,7 @@ public class LevelEditor : Editor
         GUILayout.EndArea();
         /*此段以上負責生成SceneGUI*/
 
+        level.map.transform.localScale = new Vector3(4 * level.X, 4 * level.Y);
         Vector3 spawnPosition = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
         Vector3 gridPosition = new Vector3(Mathf.Floor(spawnPosition.x) + 0.5f, Mathf.Floor(spawnPosition.y) + 0.5f, 0);
 
@@ -113,7 +113,7 @@ public class LevelEditor : Editor
         if(category != 0)
         {
             if (category == 1)
-                inLayer = level.map;
+                inLayer = level.obstacle;
             else
                 inLayer = level.enemy;
             foreach (Transform obj in inLayer.transform)
@@ -130,7 +130,7 @@ public class LevelEditor : Editor
             GameObject newObject = (GameObject)PrefabUtility.InstantiatePrefab(selectedPrefab);
             newObject.transform.position = gridPosition;
             if (category == 1)
-                newObject.transform.SetParent(level.map.transform);
+                newObject.transform.SetParent(level.obstacle.transform);
             else
                 newObject.transform.SetParent(level.enemy.transform);
         }
@@ -158,28 +158,7 @@ public class LevelEditor : Editor
             else
                 dir.position = EditorGUILayout.IntSlider(dir.position, 0, level.Y - 1);
         }
-        /*if (GUILayout.Button("Create MiniMap"))
-            MiniMap();*/
     }
-
-    /*void MiniMap()
-    {
-        Level level = (Level)target;
-        GameObject map = level.map, miniMap = level.miniMap;
-        while (miniMap.transform.childCount != 0)
-        {
-            DestroyImmediate(miniMap.transform.GetChild(0).gameObject);
-        }
-        foreach (Transform trans in map.transform)
-        {
-            if (trans.gameObject.CompareTag("Wall") && (trans.gameObject.name == "Wall" || trans.gameObject.name == "Wall-HalfCollider"))
-                Instantiate(level.mapSprite[0], trans.position - new Vector3(500, 1, 0), Quaternion.identity, miniMap.transform);
-            else if (trans.gameObject.CompareTag("Wall"))
-                Instantiate(level.mapSprite[0], trans.position - new Vector3(500, 0, 0), Quaternion.identity, miniMap.transform);
-            else if (trans.gameObject.CompareTag("Untagged"))
-                Instantiate(level.mapSprite[1], trans.position - new Vector3(500, 0, 0), Quaternion.identity, miniMap.transform);
-        }
-    }*/
 
     void DrawRect(float posX, float posY, float halfX, float halfY, Color color)
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using Pathfinding;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class LevelGenerator : MonoBehaviour
         Final_Makeup = 6,       //把沒用到的接口補起來
         Finish = 7              //結束
     }
-    [Header("關卡數量限制"), Range(7,15)]
+    [Header("關卡數量限制"), Range(0,15)]
     public int minMap = 7, maxMap = 7;
     [Header("地圖邊界限制")]
     public static int mapX = 75, mapY = 75;
@@ -30,8 +31,11 @@ public class LevelGenerator : MonoBehaviour
     public int[,] map = new int[mapX, mapY];
     [HideInInspector]
     public GeneratingStatus currentStatus = GeneratingStatus.Initiating;
+    public GameObject Composite;
     public GameObject StartingPlace;
-    public GameObject[] paths, makeUp;
+    public GameObject path;
+    //public AstarPath astarPath;
+    //public GameObject[] paths, makeUp;
     private GameObject[] levels, lvToPut;
     private Level[] lvInform;      //儲存lvToPut內的Level class資料
     private Vector2Int[,] link;    //link存關卡間的連結，在linkConstructor Enque的時候查找是否有重複的連結，儲存的方式是用bit operation
@@ -44,6 +48,7 @@ public class LevelGenerator : MonoBehaviour
     void Start()
     {
         levels = Resources.LoadAll<GameObject>("Prefab(LC)/SubLevels");
+        //astarPath = GameObject.FindGameObjectWithTag("Astar").GetComponent<AstarPath>();
         for (int i = 0; i < mapY; i++)
             for (int j = 0; j < mapX; j++)
                 map[i,j] = 0;
@@ -183,6 +188,7 @@ public class LevelGenerator : MonoBehaviour
                 temp.Enqueue(from);
                 map[from.x, from.y] = 3;
                 int upCost = int.MaxValue, downCost = int.MaxValue, leftCost = int.MaxValue, rightCost = int.MaxValue;
+                int oriCost = (to - from).sqrMagnitude;
                 if (from.y > 0 && map[from.x,from.y - 1] < 2 && DeadEnd(from.x,from.y - 1) == false)
                     upCost = (to - (from + new Vector2Int(0, -1))).sqrMagnitude;
                 if (from.y < mapY - 1 && map[from.x, from.y + 1] < 2 && DeadEnd(from.x, from.y + 1) == false)
@@ -192,13 +198,13 @@ public class LevelGenerator : MonoBehaviour
                 if (from.x < mapX - 1 && map[from.x + 1, from.y] < 2 && DeadEnd(from.x + 1, from.y) == false)
                     rightCost = (to - (from + new Vector2Int(1, 0))).sqrMagnitude;
                 int bestCost = (int)Mathf.Min(upCost, downCost, leftCost, rightCost);
-                if (upCost == bestCost)
+                if (upCost - oriCost < 0 || upCost == bestCost)
                     from += new Vector2Int(0, -1);
-                else if (downCost == bestCost)
+                else if (downCost - oriCost < 0 || downCost == bestCost)
                     from += new Vector2Int(0, 1);
-                else if (leftCost == bestCost)
+                else if (leftCost - oriCost < 0 || leftCost == bestCost)
                     from += new Vector2Int(-1, 0);
-                else if (rightCost == bestCost)
+                else if (rightCost - oriCost < 0 || rightCost == bestCost)
                     from += new Vector2Int(1, 0);
                 minX = ((from.x < minX) ? from.x : minX);
                 minY = ((from.y < minY) ? from.y : minY);
@@ -238,17 +244,17 @@ public class LevelGenerator : MonoBehaviour
         currentStatus = GeneratingStatus.Build_Paths;
         while(PathCoordinate.Count != 0)
         {
-            int spawnIndex = 0;
+            //int spawnIndex = 0;
             Vector2Int Pos = PathCoordinate.Dequeue();
-            if (Pos.y > 0 && map[Pos.x, Pos.y - 1] != 2 && map[Pos.x, Pos.y - 1] > 0)
+            /*if (Pos.y > 0 && map[Pos.x, Pos.y - 1] != 2 && map[Pos.x, Pos.y - 1] > 0)
                 spawnIndex += 1;
             if (Pos.y < mapY - 1 && map[Pos.x, Pos.y + 1] != 2 && map[Pos.x, Pos.y + 1] > 0)
                 spawnIndex += 2;
             if (Pos.x > 0 && map[Pos.x - 1, Pos.y] != 2 && map[Pos.x - 1, Pos.y] > 0)
                 spawnIndex += 4;
             if (Pos.x < mapX - 1 && map[Pos.x + 1, Pos.y] != 2 && map[Pos.x + 1, Pos.y] > 0)
-                spawnIndex += 8;
-            Instantiate(paths[spawnIndex], Index2Pos(Pos, 1, 1), Quaternion.identity);
+                spawnIndex += 8;*/
+            Instantiate(path, Index2Pos(Pos, 1, 1), Quaternion.identity, Composite.transform);
         }
 
         FinalMakeup();
@@ -257,7 +263,7 @@ public class LevelGenerator : MonoBehaviour
     private void FinalMakeup() //步驟6
     {
         currentStatus = GeneratingStatus.Final_Makeup;
-        for (int i = 0; i < lvInform.Length; i++)
+        /*for (int i = 0; i < lvInform.Length; i++)
         {
             for (int j = 0; j < lvInform[i].directions.Length; j++)
             {
@@ -265,14 +271,28 @@ public class LevelGenerator : MonoBehaviour
                 if (lvInform[i].directions[j].connectedAmount == 0)
                     Instantiate(makeUp[k], Index2Pos(ConnectionPos(i, j), 1, 1), Quaternion.identity);
             }
-        }
+        }*/
         StartCoroutine(Finish());
     }
 
     IEnumerator Finish() //步驟7
     {
+        AstarPath.active.data.gridGraph.center = Index2Pos(new Vector2(minX, minY), maxX - minX + 1, maxY - minY + 1);
+        AstarPath.active.data.gridGraph.SetDimensions(4 * (maxX - minX) + 4, 4 * (maxY - minY) + 4, 1);
+        AstarPath.active.Scan();
         yield return new WaitForSeconds(1.5f);
         currentStatus = GeneratingStatus.Finish;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("scanning");
+            AstarPath.active.data.gridGraph.center = Index2Pos(new Vector2(minX,minY), maxX - minX + 1, maxY - minY + 1);
+            AstarPath.active.data.gridGraph.SetDimensions(4 * (maxX - minX) + 4, 4 * (maxY - minY) + 4, 1); 
+            AstarPath.active.Scan();
+        }
     }
 
     private void PlaceLevelSetup(int index, Vector2Int PlacePos) //步驟2會用到
@@ -283,9 +303,9 @@ public class LevelGenerator : MonoBehaviour
             minY = PlacePos.y;
         if (PlacePos.x + lvInform[index].X - 1 > maxX)
             maxX = PlacePos.x + lvInform[index].X - 1;
-        if (PlacePos.y + lvInform[index].Y - 1 > minY)
+        if (PlacePos.y + lvInform[index].Y - 1 > maxY)
             maxY = PlacePos.y + lvInform[index].X - 1;
-        GameObject newGO = Instantiate(lvToPut[index], Index2Pos(PlacePos, lvInform[index].X, lvInform[index].Y), Quaternion.identity);
+        GameObject newGO = Instantiate(lvToPut[index], Index2Pos(PlacePos, lvInform[index].X, lvInform[index].Y), Quaternion.identity, Composite.transform);
         lvToPut[index] = newGO;
         lvInform[index] = lvToPut[index].GetComponent<Level>();
         lvInform[index].PosInArray = PlacePos;
