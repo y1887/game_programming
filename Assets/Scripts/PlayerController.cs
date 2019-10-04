@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System.Linq;
+using BulletCreator;
+
+public enum WeaponType
+{
+    pistol = 0,
+    rifle = 1,
+    shotgun = 2,
+    laser = 3
+}
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,10 +19,6 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private CircleCollider2D circle;
     private Camera cam;
-
-    private LinkedList<GameObject> satellites = new LinkedList<GameObject>();
-    private LinkedList<Weapon> weapons = new LinkedList<Weapon>();
-    private int currentSatIndex, previousSatIndex;
 
     private bool isShifting = false, canShift = true;
     private bool canShoot = true;
@@ -33,19 +38,17 @@ public class PlayerController : MonoBehaviour
         carrier = transform.Find("Satellites").gameObject;
         rb = player.GetComponent<Rigidbody2D>();
         circle = player.GetComponent<CircleCollider2D>();
-        currentSatIndex = 0;
-        previousSatIndex = -1;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        /*if (Input.GetKeyDown(KeyCode.R))
             Special();
         if (Input.GetMouseButton(0) && canShoot)
             Attack();
         if (Input.mouseScrollDelta.y != 0)
-            ChangeWeapon(Input.mouseScrollDelta.y);
+            ChangeWeapon(Input.mouseScrollDelta.y);*/
         if (Input.GetKeyDown(KeyCode.Space) && canShift)
             StartCoroutine(Shift());
         if (isShifting == false)
@@ -54,7 +57,7 @@ public class PlayerController : MonoBehaviour
         player.transform.rotation = Quaternion.Euler(0, 0, (rb.velocity.y < 0 ? -Vector2.Angle(Vector2.right, rb.velocity) : Vector2.Angle(Vector2.right, rb.velocity)));
     }
 
-    private void LateUpdate()
+    /*private void LateUpdate()
     {
         if (satellites.Count == 0)
             return;
@@ -118,7 +121,7 @@ public class PlayerController : MonoBehaviour
         if (satellites.Count == 0)
             return;
         weapons.ElementAt(currentSatIndex).SwitchIn();
-    }
+    }*/
 
     Vector2 Moving()
     {

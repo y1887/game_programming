@@ -34,10 +34,13 @@ public class CameraFollower : MonoBehaviour
             Vector2 newPos = Vector2.Lerp(previousPos, player.transform.position, lerp);
             cam.transform.position = new Vector3(newPos.x, newPos.y, cam.transform.position.z);
         }
+        else
+            Debug.LogWarning("Player was not found by the camera.");
     }
 
     IEnumerator FindPlayer()
     {
+        enabled = false;
         yield return new WaitUntil(() => (int)generator.currentStatus >= (int)LevelGenerator.GeneratingStatus.Final_Makeup);
         while(player == null)
         {
@@ -46,5 +49,6 @@ public class CameraFollower : MonoBehaviour
         }
         cam.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, cam.transform.position.z);
         controller = player.GetComponentInParent<PlayerController>();
+        enabled = true;
     }
 }

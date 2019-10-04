@@ -8,6 +8,7 @@ TagManager:
   - LevelGenerator
   - Pit
   - Astar
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Wall
   - Enemy
   - Player
-  - 
+  - Bullet
   - 
   - 
   - 

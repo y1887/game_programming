@@ -130,10 +130,10 @@ public class LevelGenerator : MonoBehaviour
                     if (map[newPos.x, newPos.y] == 0 && map[newPos.x + lvInform[i].X - 1, newPos.y] == 0 && map[newPos.x, newPos.y + lvInform[i].Y - 1] == 0 && map[newPos.x + lvInform[i].X - 1, newPos.y + lvInform[i].Y - 1] == 0)
                     {
                         PlaceLevelSetup(i, newPos);
-                        int rand = UnityEngine.Random.Range(0, i);
+                        /*int rand = UnityEngine.Random.Range(0, i);
                         while((lvInform[i].PosInArray - lvInform[rand].PosInArray).sqrMagnitude > 400)
-                            rand = UnityEngine.Random.Range(0, i);
-                        BuildLink(rand, i, false);
+                            rand = UnityEngine.Random.Range(0, i);*/
+                        BuildLink(i - 1, i, false);
                         findPlace = true;
                         break;
                     }
@@ -164,7 +164,6 @@ public class LevelGenerator : MonoBehaviour
                 fromTo = new Vector2Int(-1, -1);
             }
         }
-
 
         FindPaths();
     }
@@ -219,6 +218,8 @@ public class LevelGenerator : MonoBehaviour
                 map[vector.x, vector.y] = 1;
         }
         //linkConstructor(a,b,c,d) => "從第a號關卡的第b號接口做一條路到第c號關卡的第d號接口"
+
+#if UNITY_EDITOR
         string path = "Assets/Resources/Test.txt";
         StreamWriter writer = new StreamWriter(new FileStream(path, FileMode.Truncate));
         for (int i = 0; i < mapY; i++)
@@ -235,6 +236,7 @@ public class LevelGenerator : MonoBehaviour
             writer.Write(str);
         }
         writer.Close();
+#endif
 
         BuildPaths();
     }
@@ -284,7 +286,7 @@ public class LevelGenerator : MonoBehaviour
         currentStatus = GeneratingStatus.Finish;
     }
 
-    private void Update()
+    /*private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
@@ -293,7 +295,7 @@ public class LevelGenerator : MonoBehaviour
             AstarPath.active.data.gridGraph.SetDimensions(4 * (maxX - minX) + 4, 4 * (maxY - minY) + 4, 1); 
             AstarPath.active.Scan();
         }
-    }
+    }*/
 
     private void PlaceLevelSetup(int index, Vector2Int PlacePos) //步驟2會用到
     {

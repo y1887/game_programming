@@ -14678,10 +14678,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce22918a11a423848ac2b9cf7fcdb156, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minMap: 5
-  maxMap: 5
-  divergence: 5
-  convergence: 1
+  minMap: 10
+  maxMap: 14
+  divergence: 3
+  convergence: 0
   currentStatus: 0
   Composite: {fileID: 360332656}
   StartingPlace: {fileID: 80281160189540517, guid: bc9833d4558f7a147b1cdba64651380c,

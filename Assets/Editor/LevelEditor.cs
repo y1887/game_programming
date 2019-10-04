@@ -6,7 +6,6 @@ using UnityEditor;
 [CustomEditor(typeof(Level))]
 public class LevelEditor : Editor
 {
-#if UNITY_EDITOR
     private Level level;
     private GameObject[] tiles, monsters;
     private string[] tileNames, monsterNames, categories = {"None", "Tiles", "Monsters"};
@@ -189,5 +188,4 @@ public class LevelEditor : Editor
         };
         Handles.DrawSolidRectangleWithOutline(verts, new Color(color.r, color.g, color.b, 0.1f), color);
     }
-#endif
 }
