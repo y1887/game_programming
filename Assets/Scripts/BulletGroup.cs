@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using BulletCreator;
 
-public class BulletGroup : BulletPattern
+/*public class BulletGroup : BulletPattern
 {
     private Rigidbody2D rb = null;
     [SerializeField]
@@ -69,4 +69,4 @@ public class BulletGroup : BulletPattern
         yield return new WaitForSeconds(destroyTime);
         Destroy(this.gameObject);
     }
-}
+}*/

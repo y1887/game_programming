@@ -16,7 +16,7 @@ public class AreaCollision : MonoBehaviour
         Debug.Log(collision.gameObject.name);
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            collision.gameObject.SendMessageUpwards("RemoveBullet",collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
     }
 }

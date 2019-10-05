@@ -10,5 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70663ae86fa7f4c45b84d34293292885, type: 3}
-  m_Name: New Bullet Array
+  m_Name: BA
   m_EditorClassIdentifier: 
+  pistol: []
+  rifle: []
+  shotgun: []
+  laser: []
+  enemies:
+  - gameObject: {fileID: 4463068735855389471, guid: a522eb659c16a9f4e8c34522a8815b7b,
+      type: 3}
+    size: 300

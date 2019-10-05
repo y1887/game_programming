@@ -4,34 +4,18 @@ using UnityEngine;
 
 namespace BulletCreator
 {
-
-    public class BulletPattern : MonoBehaviour
+    [System.Serializable]
+    public class Bullet
     {
-        public AnimationCurve vRotation = new AnimationCurve();
-        public AnimationCurve velocity = new AnimationCurve();
-        public AnimationCurve rotation = new AnimationCurve();
+        public GameObject gameObject;
+        public string name { get { return gameObject.name; } set { name = value; } }
+        public int size;
     }
 
-    public struct CreateBullets
+    [System.Serializable]
+    public class SpawnData
     {
-        public BulletGroup Grouping(GameObject[] bullets, Transform[] transforms)
-        {
-            if(bullets.Length > transforms.Length)
-            {
-                Debug.LogError("Invalid information for grouping");
-                return null;
-            }
-            BulletGroup bulletGroup = new BulletGroup();
-            int i = 0;
-            foreach(GameObject bullet in bullets)
-            {
-                bullet.transform.SetParent(bulletGroup.parent.transform);
-                bullet.transform.localPosition = transforms[i].position;
-                bullet.transform.localRotation = transforms[i].rotation;
-                bulletGroup.bullets.Add(bullet);
-                i++;
-            }
-            return bulletGroup;
-        }
+        public string name;
+        public Vector2 position;
     }
 }
