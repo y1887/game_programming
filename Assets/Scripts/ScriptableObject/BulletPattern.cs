@@ -10,6 +10,5 @@ public class BulletPattern : ScriptableObject
     public AnimationCurve velocity = new AnimationCurve();
     public AnimationCurve rotation = new AnimationCurve();
     public AnimationCurve scale = new AnimationCurve();
-    [HideInInspector]
     public List<SpawnData> spawns = new List<SpawnData>();
 }

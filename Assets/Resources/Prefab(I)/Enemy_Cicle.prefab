@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1956498276739868601}
   - component: {fileID: 5141199161528208979}
   - component: {fileID: 4782993396694560637}
+  - component: {fileID: 3781002810839760244}
   m_Layer: 11
   m_Name: Enemy_Cicle
   m_TagString: Bullet
@@ -69,7 +70,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.3
 --- !u!212 &4782993396694560637
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -119,3 +120,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1818360610 &3781002810839760244
+ScaleConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4463068735855389471}
+  m_Enabled: 1
+  m_Weight: 0
+  m_ScaleAtRest: {x: 1, y: 1, z: 1}
+  m_ScaleOffset: {x: 1, y: 1, z: 1}
+  m_AffectScalingX: 1
+  m_AffectScalingY: 1
+  m_AffectScalingZ: 1
+  m_IsContraintActive: 1
+  m_IsLocked: 1
+  m_Sources: []

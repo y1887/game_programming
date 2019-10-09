@@ -17,6 +17,7 @@ public enum BulletType
 [CustomEditor(typeof(BulletPattern))]
 public class PatternEditor : Editor
 {
+    private int degree;
     private int bCount;
     private int eCount;
     private float radius;
@@ -26,6 +27,7 @@ public class PatternEditor : Editor
     private readonly BulletArray bulletAR = BulletArray.instance;
     private Dictionary<GameObject, SpawnData> dict;
     private List<GameObject> list;
+    public Stack<List<SpawnData>> undoStack;
     private BulletType index = 0;
     private int bulletNum = 0;
     private GameObject selectedPrefab;
@@ -38,16 +40,17 @@ public class PatternEditor : Editor
         SceneView.onSceneGUIDelegate += OnSceneGUI;
         index = 0;
         Inspecting = (BulletPattern)target;
+        undoStack = new Stack<List<SpawnData>>();
+        List<SpawnData> newlist = new List<SpawnData>();
+        foreach (SpawnData data in Inspecting.spawns)
+            newlist.Add(data);
+        undoStack.Push(newlist);
         dict = new Dictionary<GameObject, SpawnData>();
         list = new List<GameObject>();
         selectedPrefab = null;
         showCircle = false; showPolygon = false; showLine = false;
-        foreach (SpawnData data in Inspecting.spawns)
-        {
-            GameObject newBullet = Instantiate(bulletAR.bulletDictionary[data.name], data.position, Quaternion.identity);
-            dict.Add(newBullet, data);
-            list.Add(newBullet);
-        }
+        degree = 0;
+        DrawGO();
         P = new string[bulletAR.pistol.Count + 1];
         P[0] = "None";
         for (int i = 0; i < bulletAR.pistol.Count; i++)
@@ -74,13 +77,8 @@ public class PatternEditor : Editor
     {
         SceneView.onSceneGUIDelegate -= OnSceneGUI;
         selectedPrefab = null;
-        while(list.Count != 0)
-        {
-            GameObject toDestroy = list[0];
-            list.RemoveAt(0);
-            DestroyImmediate(toDestroy);
-        }
-        dict.Clear();
+        ClearGO();
+        undoStack.Clear();
     }
 
     public override void OnInspectorGUI()
@@ -158,15 +156,24 @@ public class PatternEditor : Editor
         EditorGUILayout.Space();
 
         if (GUILayout.Button("Undo"))
-            Undo.PerformUndo();
-        if (GUILayout.Button("Redo"))
-            Undo.PerformRedo();
+            UndoOperation();
+
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        degree = EditorGUILayout.IntSlider("Degree", degree, 0, 359);
+        if (GUILayout.Button("Test Pattern"))
+            RunPattern();
     }
 
     public void DrawCircle()
     {
         if (selectedPrefab == null)
             return;
+        List<SpawnData> newList = new List<SpawnData>();
+        foreach (SpawnData data in Inspecting.spawns)
+            newList.Add(data);
+        undoStack.Push(newList);
         for (int i = 0; i < bCount; i++)
         {
             float degree = 360 * ((float)i / (float)bCount) * Mathf.Deg2Rad;
@@ -179,26 +186,47 @@ public class PatternEditor : Editor
             Inspecting.spawns.Add(newSpawn);
             list.Add(bullet);
         }
+        EditorUtility.SetDirty(Inspecting);
     }
 
     public void DrawPolygon()
     {
         if (selectedPrefab == null)
             return;
+        List<SpawnData> newList = new List<SpawnData>();
+        foreach (SpawnData data in Inspecting.spawns)
+            newList.Add(data);
+        undoStack.Push(newList);
         Vector2 a = new Vector2(radius, 0), b;
         for (int i = 1; i <= eCount; i++)
         {
             float degree = 360 * ((float)i / (float)eCount) * Mathf.Deg2Rad;
             b = new Vector2(radius * Mathf.Cos(degree), radius * Mathf.Sin(degree));
-            DrawLine(a, b);
+            for (int j = 0; j < bCount; j++)
+            {
+                float lerpValue = (float)j / (float)(bCount);
+                Vector2 pos = Vector2.Lerp(a, b, lerpValue);
+                GameObject bullet = Instantiate(selectedPrefab, pos, Quaternion.identity);
+                SpawnData newSpawn = new SpawnData();
+                newSpawn.name = selectedPrefab.name;
+                newSpawn.position = pos;
+                dict.Add(bullet, newSpawn);
+                Inspecting.spawns.Add(newSpawn);
+                list.Add(bullet);
+            }
             a = b;
         }
+        EditorUtility.SetDirty(Inspecting);
     }
 
     public void DrawLine(Vector2 a, Vector2 b)
     {
         if (selectedPrefab == null)
             return;
+        List<SpawnData> newList = new List<SpawnData>();
+        foreach (SpawnData data in Inspecting.spawns)
+            newList.Add(data);
+        undoStack.Push(newList);
         for (int i = 0; i < bCount; i++)
         {
             float lerpValue = (float)i / (float)(bCount - 1);
@@ -211,6 +239,44 @@ public class PatternEditor : Editor
             Inspecting.spawns.Add(newSpawn);
             list.Add(bullet);
         }
+        EditorUtility.SetDirty(Inspecting);
+    }
+
+    public void DrawGO()
+    {
+        if (EditorApplication.isPlaying)
+            return;
+        foreach (SpawnData data in Inspecting.spawns)
+        {
+            GameObject newBullet = Instantiate(bulletAR.bulletDictionary[data.name], data.position, Quaternion.identity);
+            dict.Add(newBullet, data);
+            list.Add(newBullet);
+        }
+    }
+
+    public void ClearGO()
+    {
+        while (list.Count != 0)
+        {
+            GameObject toDestroy = list[0];
+            list.RemoveAt(0);
+            DestroyImmediate(toDestroy);
+        }
+        dict.Clear();
+    }
+
+    public void UndoOperation()
+    {
+        if(undoStack.Count == 0)
+        {
+            Debug.Log("Cannot perfrom undo!");
+            return;
+        }
+        List<SpawnData> debug = undoStack.Pop();
+        Inspecting.spawns = debug;
+        ClearGO();
+        DrawGO();
+        EditorUtility.SetDirty(Inspecting);
     }
 
     public void OnSceneGUI(SceneView sceneView)
@@ -261,5 +327,13 @@ public class PatternEditor : Editor
             }
         }
         SceneView.RepaintAll();
+    }
+
+    public void RunPattern()
+    {
+        if (BulletManager.instance != null)
+            BulletManager.instance.StartCoroutine(BulletManager.instance.SpawnPattern(Inspecting, Vector2.zero, Quaternion.Euler(0,0,degree)));
+        else
+            Debug.Log("Instance is not found.");
     }
 }

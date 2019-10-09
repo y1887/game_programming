@@ -19,4 +19,4 @@ MonoBehaviour:
   enemies:
   - gameObject: {fileID: 4463068735855389471, guid: a522eb659c16a9f4e8c34522a8815b7b,
       type: 3}
-    size: 300
+    size: 500

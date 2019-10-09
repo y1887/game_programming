@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using BulletCreator;
+using UnityEditor;
 
 [CreateAssetMenu]
 [System.Serializable]
@@ -56,6 +57,7 @@ public class BulletArray : ScriptableObject
             if (bulletDictionary[s] == null)
                 bulletDictionary.Remove(s);
         }
+        EditorUtility.SetDirty(this);
     }
     private void OnDestroy()
     {
