@@ -5,10 +5,13 @@ using UnityEngine;
 using BulletCreator;
 using UnityEngine.Jobs;
 using Unity.Jobs;
+using Unity.Burst;
 
 public class BulletManager : MonoBehaviour
 {
     private GameObject dummy;
+    [HideInInspector]
+    public int currentBulletAmount;
 
     public static BulletManager instance = null;
     private void Awake()
@@ -57,7 +60,7 @@ public class BulletManager : MonoBehaviour
 
         public void Execute(int i, TransformAccess transform)
         {
-            float newAngle = angle[i] + parentAngle;
+            float newAngle = parentAngle + angle[i];
             Vector3 newDisance = new Vector3(distance[i] * Mathf.Cos(newAngle), distance[i] * Mathf.Sin(newAngle));
             transform.position = parentPos + (newDisance * scale); 
         }
@@ -65,8 +68,7 @@ public class BulletManager : MonoBehaviour
 
     public IEnumerator SpawnPattern(BulletPattern pattern, Vector2 pos, Quaternion quaternion)
     {
-        GameObject newDummy = Instantiate(dummy, pos, Quaternion.identity);
-        newDummy.transform.rotation = Quaternion.Euler(new Vector3(0, 0, quaternion.eulerAngles.z));
+        GameObject newDummy = Instantiate(dummy, pos, quaternion);
         Transform parent = newDummy.transform;
         Rigidbody2D rb = newDummy.AddComponent<Rigidbody2D>();
         List<GameObject> bullets = new List<GameObject>();
@@ -76,6 +78,7 @@ public class BulletManager : MonoBehaviour
         float selfRotate = newDummy.transform.rotation.eulerAngles.z;
         float speed = 0;
         int j = 0, length = pattern.spawns.Count;
+        currentBulletAmount += length;
         Debug.Log(pattern.spawns.Count);
         JobHandle PositionJobHandle;
         Transform[] temp = new Transform[length];
@@ -89,16 +92,17 @@ public class BulletManager : MonoBehaviour
             bullets.Add(newBullet);
             bulletDictionary[spawn.name].Enqueue(newBullet);
             distance[j] = spawn.position.magnitude;
-            angle[j] = newRotate;
+            angle[j] = newRotate - vRotate;
             temp[j] = newBullet.transform;
             j++;
         }
         TransformAccessArray transforms = new TransformAccessArray(temp);
+        float tempRotate = vRotate;
         while (timer <= 10)
         {
             if (bullets.Count == 0)
-                break;
-            vRotate += pattern.vRotation.Evaluate(timer) * Mathf.Deg2Rad;
+                break; 
+            vRotate = tempRotate + pattern.vRotation.Evaluate(timer) * Mathf.Deg2Rad;
             speed = pattern.velocity.Evaluate(timer);
             rb.velocity = new Vector2(speed * Mathf.Cos(vRotate), speed * Mathf.Sin(vRotate));
             selfRotate += pattern.rotation.Evaluate(timer) * Time.deltaTime;
@@ -116,14 +120,19 @@ public class BulletManager : MonoBehaviour
             {
                 if (!bullets[i].activeSelf)
                 {
-                    bullets[i].transform.SetParent(null);
                     bullets.Remove(bullets[i]);
+                    currentBulletAmount--;
                     continue;
                 }
             }
             timer += Time.deltaTime;
             yield return null;
             PositionJobHandle.Complete();
+        }
+        for (int i = 0; i < bullets.Count; i++)
+        {
+            bullets[i].SetActive(false);
+            currentBulletAmount--;
         }
         Destroy(newDummy);
         transforms.Dispose();

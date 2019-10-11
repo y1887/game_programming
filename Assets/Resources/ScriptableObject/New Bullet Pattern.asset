@@ -14,7 +14,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vRotation:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 144
+      outSlope: 144
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 10
+      value: 1440
+      inSlope: 144
+      outSlope: 144
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -23,7 +41,7 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 15
+      value: 5
       inSlope: 0
       outSlope: 0
       tangentMode: 34
@@ -32,7 +50,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 10
-      value: 15
+      value: 5
       inSlope: 0
       outSlope: 0
       tangentMode: 34
@@ -47,7 +65,7 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 60
+      value: -30
       inSlope: 0
       outSlope: 0
       tangentMode: 34
@@ -56,7 +74,7 @@ MonoBehaviour:
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 10
-      value: 60
+      value: -30
       inSlope: 0
       outSlope: 0
       tangentMode: 34
@@ -71,18 +89,18 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.1
-      inSlope: 0.98999995
-      outSlope: 0.98999995
+      value: 1
+      inSlope: 0.4
+      outSlope: 0.4
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 10
-      value: 10
-      inSlope: 0.98999995
-      outSlope: 0.98999995
+      value: 5
+      inSlope: 0.4
+      outSlope: 0.4
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -94,102 +112,120 @@ MonoBehaviour:
   - name: Enemy_Cicle
     position: {x: 3, y: 0}
   - name: Enemy_Cicle
-    position: {x: 2.25, y: 0.4330127}
+    position: {x: 2.9835658, y: 0.3135854}
   - name: Enemy_Cicle
-    position: {x: 1.4999999, y: 0.8660254}
+    position: {x: 2.934443, y: 0.6237351}
   - name: Enemy_Cicle
-    position: {x: 0.7499999, y: 1.299038}
+    position: {x: 2.8531697, y: 0.927051}
   - name: Enemy_Cicle
-    position: {x: -0.0000002483527, y: 1.7320508}
+    position: {x: 2.7406363, y: 1.22021}
   - name: Enemy_Cicle
-    position: {x: -0.7500001, y: 2.1650634}
+    position: {x: 2.598076, y: 1.5}
+  - name: Enemy_Cicle
+    position: {x: 2.427051, y: 1.7633557}
+  - name: Enemy_Cicle
+    position: {x: 2.2294345, y: 2.007392}
+  - name: Enemy_Cicle
+    position: {x: 2.0073917, y: 2.2294345}
+  - name: Enemy_Cicle
+    position: {x: 1.763356, y: 2.427051}
+  - name: Enemy_Cicle
+    position: {x: 1.4999999, y: 2.5980763}
+  - name: Enemy_Cicle
+    position: {x: 1.2202098, y: 2.7406363}
+  - name: Enemy_Cicle
+    position: {x: 0.92705095, y: 2.8531697}
+  - name: Enemy_Cicle
+    position: {x: 0.62373495, y: 2.934443}
+  - name: Enemy_Cicle
+    position: {x: 0.31358525, y: 2.9835658}
+  - name: Enemy_Cicle
+    position: {x: -0.00000013113416, y: 3}
+  - name: Enemy_Cicle
+    position: {x: -0.31358552, y: 2.9835658}
+  - name: Enemy_Cicle
+    position: {x: -0.6237349, y: 2.934443}
+  - name: Enemy_Cicle
+    position: {x: -0.9270508, y: 2.8531697}
+  - name: Enemy_Cicle
+    position: {x: -1.2202097, y: 2.7406363}
   - name: Enemy_Cicle
     position: {x: -1.5000002, y: 2.598076}
   - name: Enemy_Cicle
-    position: {x: -1.5000001, y: 1.7320507}
+    position: {x: -1.7633555, y: 2.427051}
   - name: Enemy_Cicle
-    position: {x: -1.5000001, y: 0.8660252}
+    position: {x: -2.007392, y: 2.2294345}
   - name: Enemy_Cicle
-    position: {x: -1.5, y: -0.00000011920929}
+    position: {x: -2.2294345, y: 2.007392}
   - name: Enemy_Cicle
-    position: {x: -1.4999999, y: -0.8660256}
+    position: {x: -2.427051, y: 1.7633555}
   - name: Enemy_Cicle
-    position: {x: -1.4999999, y: -1.7320508}
+    position: {x: -2.598076, y: 1.5000002}
+  - name: Enemy_Cicle
+    position: {x: -2.7406363, y: 1.2202097}
+  - name: Enemy_Cicle
+    position: {x: -2.8531694, y: 0.92705107}
+  - name: Enemy_Cicle
+    position: {x: -2.934443, y: 0.62373483}
+  - name: Enemy_Cicle
+    position: {x: -2.9835658, y: 0.3135855}
+  - name: Enemy_Cicle
+    position: {x: -3, y: -0.00000026226832}
+  - name: Enemy_Cicle
+    position: {x: -2.9835658, y: -0.3135853}
+  - name: Enemy_Cicle
+    position: {x: -2.9344428, y: -0.62373537}
+  - name: Enemy_Cicle
+    position: {x: -2.8531697, y: -0.92705095}
+  - name: Enemy_Cicle
+    position: {x: -2.7406363, y: -1.2202096}
+  - name: Enemy_Cicle
+    position: {x: -2.598076, y: -1.4999999}
+  - name: Enemy_Cicle
+    position: {x: -2.427051, y: -1.7633554}
+  - name: Enemy_Cicle
+    position: {x: -2.2294345, y: -2.007392}
+  - name: Enemy_Cicle
+    position: {x: -2.007392, y: -2.2294343}
+  - name: Enemy_Cicle
+    position: {x: -1.7633562, y: -2.4270506}
   - name: Enemy_Cicle
     position: {x: -1.4999998, y: -2.5980763}
   - name: Enemy_Cicle
-    position: {x: -0.74999976, y: -2.1650636}
+    position: {x: -1.22021, y: -2.7406363}
   - name: Enemy_Cicle
-    position: {x: 0.0000002036492, y: -1.7320507}
+    position: {x: -0.9270513, y: -2.8531694}
   - name: Enemy_Cicle
-    position: {x: 0.7500001, y: -1.2990379}
+    position: {x: -0.6237358, y: -2.9344428}
   - name: Enemy_Cicle
-    position: {x: 1.5000001, y: -0.86602503}
+    position: {x: -0.313585, y: -2.9835658}
   - name: Enemy_Cicle
-    position: {x: 2.25, y: -0.43301234}
+    position: {x: 0.00000003577464, y: -3}
   - name: Enemy_Cicle
-    position: {x: 1, y: 0}
+    position: {x: 0.31358507, y: -2.9835658}
   - name: Enemy_Cicle
-    position: {x: -0.50000006, y: 0.8660254}
+    position: {x: 0.6237344, y: -2.934443}
   - name: Enemy_Cicle
-    position: {x: -0.4999999, y: -0.86602545}
+    position: {x: 0.92705137, y: -2.8531694}
   - name: Enemy_Cicle
-    position: {x: 5, y: 0}
+    position: {x: 1.2202101, y: -2.7406363}
   - name: Enemy_Cicle
-    position: {x: 4.890738, y: 1.0395585}
+    position: {x: 1.4999998, y: -2.5980763}
   - name: Enemy_Cicle
-    position: {x: 4.567727, y: 2.0336833}
+    position: {x: 1.7633553, y: -2.4270513}
   - name: Enemy_Cicle
-    position: {x: 4.045085, y: 2.9389262}
+    position: {x: 2.0073922, y: -2.2294343}
   - name: Enemy_Cicle
-    position: {x: 3.3456528, y: 3.7157245}
+    position: {x: 2.2294345, y: -2.0073917}
   - name: Enemy_Cicle
-    position: {x: 2.4999998, y: 4.3301272}
+    position: {x: 2.4270508, y: -1.763356}
   - name: Enemy_Cicle
-    position: {x: 1.5450848, y: 4.755283}
+    position: {x: 2.5980759, y: -1.5000005}
   - name: Enemy_Cicle
-    position: {x: 0.5226421, y: 4.9726095}
+    position: {x: 2.7406366, y: -1.2202095}
   - name: Enemy_Cicle
-    position: {x: -0.52264255, y: 4.9726095}
+    position: {x: 2.8531697, y: -0.9270508}
   - name: Enemy_Cicle
-    position: {x: -1.5450847, y: 4.755283}
+    position: {x: 2.9344428, y: -0.6237353}
   - name: Enemy_Cicle
-    position: {x: -2.5000002, y: 4.330127}
-  - name: Enemy_Cicle
-    position: {x: -3.3456535, y: 3.715724}
-  - name: Enemy_Cicle
-    position: {x: -4.0450854, y: 2.938926}
-  - name: Enemy_Cicle
-    position: {x: -4.5677276, y: 2.0336828}
-  - name: Enemy_Cicle
-    position: {x: -4.890738, y: 1.039558}
-  - name: Enemy_Cicle
-    position: {x: -5, y: -0.0000004371139}
-  - name: Enemy_Cicle
-    position: {x: -4.890738, y: -1.0395589}
-  - name: Enemy_Cicle
-    position: {x: -4.5677276, y: -2.0336826}
-  - name: Enemy_Cicle
-    position: {x: -4.0450854, y: -2.9389257}
-  - name: Enemy_Cicle
-    position: {x: -3.3456535, y: -3.7157238}
-  - name: Enemy_Cicle
-    position: {x: -2.4999995, y: -4.3301272}
-  - name: Enemy_Cicle
-    position: {x: -1.5450854, y: -4.7552824}
-  - name: Enemy_Cicle
-    position: {x: -0.52264166, y: -4.9726095}
-  - name: Enemy_Cicle
-    position: {x: 0.5226418, y: -4.9726095}
-  - name: Enemy_Cicle
-    position: {x: 1.5450857, y: -4.7552824}
-  - name: Enemy_Cicle
-    position: {x: 2.4999995, y: -4.3301272}
-  - name: Enemy_Cicle
-    position: {x: 3.3456538, y: -3.7157238}
-  - name: Enemy_Cicle
-    position: {x: 4.045085, y: -2.9389265}
-  - name: Enemy_Cicle
-    position: {x: 4.5677276, y: -2.0336823}
-  - name: Enemy_Cicle
-    position: {x: 4.890738, y: -1.0395588}
+    position: {x: 2.9835656, y: -0.31358594}

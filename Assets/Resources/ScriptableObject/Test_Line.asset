@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d373a4e34540b784f8a1f1dac2ec79e8, type: 3}
-  m_Name: New Bullet Pattern 2
+  m_Name: Test_Line
   m_EditorClassIdentifier: 
   vRotation:
     serializedVersion: 2
@@ -42,30 +42,21 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 15
-      inSlope: Infinity
-      outSlope: Infinity
-      tangentMode: 103
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.19387756
-    - serializedVersion: 3
-      time: 2
-      value: 15
-      inSlope: -0.043349084
-      outSlope: Infinity
-      tangentMode: 97
-      weightedMode: 0
-      inWeight: 0.09693877
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 10
       value: 15
       inSlope: 0
       outSlope: 0
-      tangentMode: 136
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
