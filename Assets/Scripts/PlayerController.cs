@@ -35,19 +35,19 @@ public class PlayerController : MonoBehaviour
     {
         cam = Camera.main;
         player = transform.Find("Player").gameObject;
-        carrier = transform.Find("Satellites").gameObject;
         rb = player.GetComponent<Rigidbody2D>();
         circle = player.GetComponent<CircleCollider2D>();
+        selectedWeapon = this.GetComponentInChildren<Weapon>();
     }
 
     // Update is called once per frame
     void Update()
     {
         /*if (Input.GetKeyDown(KeyCode.R))
-            Special();
+            Special();*/
         if (Input.GetMouseButton(0) && canShoot)
             Attack();
-        if (Input.mouseScrollDelta.y != 0)
+        /*if (Input.mouseScrollDelta.y != 0)
             ChangeWeapon(Input.mouseScrollDelta.y);*/
         if (Input.GetKeyDown(KeyCode.Space) && canShift)
             StartCoroutine(Shift());
@@ -82,21 +82,14 @@ public class PlayerController : MonoBehaviour
         satellites.AddLast(newGO);
         weapons.AddLast(newGO.GetComponent<Weapon>());
         currentSatIndex = satellites.Count - 1;
-    }
+    }*/
 
     private void Attack()
     {
-        if (satellites.Count == 0)
-            return;
-        if(previousSatIndex != currentSatIndex)
-        {
-            selectedWeapon = weapons.ElementAt(currentSatIndex);
-            previousSatIndex = currentSatIndex;
-        }
         selectedWeapon.Attack();
     }
 
-    private void ChangeWeapon(float scroll)
+    /*private void ChangeWeapon(float scroll)
     {
         if(satellites.Count <= 1)
             return;
@@ -141,15 +134,20 @@ public class PlayerController : MonoBehaviour
     {
         isShifting = true;
         canShift = false;
+        float moveDis = shiftDis;
         Vector3 moveVect = Moving().normalized;
-        Vector3 moveTo = player.transform.position + moveVect * shiftDis;
+        RaycastHit2D ray = Physics2D.Raycast(player.transform.position, moveVect, shiftDis + circle.radius, 1 << 8);
+        Debug.DrawRay(player.transform.position, moveVect * shiftDis,Color.white,2);
+        if (ray.collider != null)
+            moveDis = ray.distance - 0.5f * circle.radius;
+        Vector3 moveTo = player.transform.position + moveVect * moveDis;
         player.transform.localScale = new Vector3(1.3f, 0.7f, 1);
         player.transform.rotation = Quaternion.Euler(0, 0, (moveVect.y < 0? -Vector2.Angle(Vector2.right, moveVect) : Vector2.Angle(Vector2.right, moveVect)));
-        player.transform.DOMove(moveTo, 0.1f);
-        player.transform.DOScale(new Vector3(1, 1, 1), 0.1f).SetEase(Ease.InCubic);
-        yield return new WaitForSeconds(0.1f);
-        isShifting = false;
+        player.transform.DOMove(moveTo, 0.15f * moveDis / shiftDis);
+        player.transform.DOScale(new Vector3(1, 1, 1), 0.15f).SetEase(Ease.InCubic);
         yield return new WaitForSeconds(0.15f);
+        isShifting = false;
+        yield return new WaitForSeconds(0.2f);
         canShift = true;
     }
 }

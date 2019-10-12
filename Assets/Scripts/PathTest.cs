@@ -7,6 +7,7 @@ public class PathTest : MonoBehaviour
 {
     public GameObject testDummy;
     public Transform player;
+    public int i = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +18,9 @@ public class PathTest : MonoBehaviour
     void SpawnDummy()
     {
         GameObject newGO = Instantiate(testDummy, this.transform.position, Quaternion.identity);
-        newGO.GetComponent<AIDestinationSetter>().target = player;
+        //newGO.GetComponent<AIDestinationSetter>().target = player;
+        i++;
+        if (i >= 20)
+            Destroy(this);
     }
 }

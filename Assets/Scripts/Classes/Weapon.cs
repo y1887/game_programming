@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour
     public int ammoCapacity;
     public float fireRate;
     public float damage;
+    public float spread;
     public virtual void Attack() { }
     public virtual void Special() { }
     public virtual void SwitchIn() { }

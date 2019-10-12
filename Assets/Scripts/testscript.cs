@@ -28,7 +28,7 @@ public class testscript : Enemy
         base.Follow();
         Vector3 from = enemyTransform.transform.up;
         Vector3 to = enemyTransform.transform.position - playerTransform.transform.position;
-        enemyTransform.transform.up = Vector3.Lerp(from,to,0.01f);
+        enemyTransform.transform.up = Vector3.Lerp(from,to,0.05f);
     }
 
     protected override void OnDead()

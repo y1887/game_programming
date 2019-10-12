@@ -15,7 +15,7 @@ public class CameraFollower : MonoBehaviour
     void Start()
     {
         cam = this.GetComponent<Camera>();
-        generator = GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerator>();
+        //generator = GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerator>();
         if (generator == null)
         {
             player = GameObject.FindGameObjectWithTag("Player").transform.Find("Player").gameObject;

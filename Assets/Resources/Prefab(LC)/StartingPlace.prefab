@@ -80,9 +80,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2364d2b77296f8e4189178cd09ed2649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testDummy: {fileID: 8905897135641020935, guid: f75c1509f27c7a44cb84abdb5b373f9a,
+  testDummy: {fileID: 7204619378978570508, guid: 66b37b3031434274192696e91f8064b7,
     type: 3}
   player: {fileID: 1660026855522246495}
+  i: 0
 --- !u!1 &2556882304485456140
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,9 +5,9 @@ using DG.Tweening;
 
 public class Circle : Weapon
 {
-    private Color srColor;
-    private SpriteRenderer sr;
-    private Animator anim;
+    //private Color srColor;
+    //private SpriteRenderer sr;
+    //private Animator anim;
     private Camera cam;
     private float fireTime;
     public GameObject bullet;
@@ -20,9 +20,9 @@ public class Circle : Weapon
 
     private void Start()
     {
-        sr = this.GetComponent<SpriteRenderer>();
-        srColor = sr.color;
-        anim = this.GetComponent<Animator>();
+        //sr = this.GetComponent<SpriteRenderer>();
+        //srColor = sr.color;
+        //anim = this.GetComponent<Animator>();
         currentAmmo = ammoCapacity;
         cam = Camera.main;
         if (fireRate > 0)
@@ -41,16 +41,15 @@ public class Circle : Weapon
     {
         canAttack = false;
         Vector3 mousePos = new Vector3(cam.ScreenToWorldPoint(Input.mousePosition).x, cam.ScreenToWorldPoint(Input.mousePosition).y);
-        Vector3 dir = mousePos - transform.position;
-        GameObject newBullet = Instantiate(bullet, transform.position + dir.normalized * 0.6f, Quaternion.Euler(0, 0, (dir.y < 0 ? -Vector2.Angle(Vector2.right, dir) : Vector2.Angle(Vector2.right, dir))));
+        float angle = (Vector2.SignedAngle(Vector3.right, mousePos - transform.position) + UnityEngine.Random.Range(-spread, spread)) * Mathf.Deg2Rad;
+        Vector3 dir = new Vector3(Mathf.Cos(angle),Mathf.Sin(angle));
+        GameObject newBullet = Instantiate(bullet, transform.position + dir.normalized * 0.6f, Quaternion.Euler(0, 0, Vector2.SignedAngle(Vector2.right, dir)));
         newBullet.GetComponent<Rigidbody2D>().velocity = dir.normalized * bulletSpeed;
         yield return new WaitForSeconds(fireTime);
         canAttack = true;
-        yield return new WaitForSeconds(2);
-        Destroy(newBullet);
     }
 
-    public override void SwitchIn()
+    /*public override void SwitchIn()
     {
         sr.DOColor(srColor, 0.5f);
         anim.SetTrigger("In");
@@ -60,15 +59,15 @@ public class Circle : Weapon
     {
         sr.DOColor(Color.gray, 0.5f);
         anim.SetTrigger("Out");
-    }
+    }*/
 
-    public override void Special()
+    /*public override void Special()
     {
         StartCoroutine(SpecialAtk());
         return;
-    }
+    }*/
 
-    IEnumerator SpecialAtk()
+    /*IEnumerator SpecialAtk()
     {
         Vector3 mousePos = new Vector3(cam.ScreenToWorldPoint(Input.mousePosition).x, cam.ScreenToWorldPoint(Input.mousePosition).y);
         Vector3 dir = mousePos - transform.position;
@@ -85,7 +84,5 @@ public class Circle : Weapon
             yield return new WaitForSeconds(0.1f);
         }
         Destroy(this.gameObject);
-    }
-
-    
+    }*/
 }

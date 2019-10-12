@@ -9,6 +9,7 @@ TagManager:
   - Pit
   - Astar
   - Bullet
+  - PlayerBullet
   layers:
   - Default
   - TransparentFX
@@ -22,7 +23,7 @@ TagManager:
   - Enemy
   - Player
   - Bullet
-  - 
+  - PlayerBullet
   - 
   - 
   - 

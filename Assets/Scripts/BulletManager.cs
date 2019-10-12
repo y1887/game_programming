@@ -54,17 +54,40 @@ public class BulletManager : MonoBehaviour
         public NativeArray<float> distance;
         [ReadOnly]
         public NativeArray<float> angle; //in radian format
+        [ReadOnly]
+        public NativeArray<bool> isActive;
+        //public NativeArray<SpherecastCommand> commands;
         public Vector3 parentPos;
         public float parentAngle;
         public float scale;
 
         public void Execute(int i, TransformAccess transform)
         {
+            if (!isActive[i])
+                return;
             float newAngle = parentAngle + angle[i];
             Vector3 newDisance = new Vector3(distance[i] * Mathf.Cos(newAngle), distance[i] * Mathf.Sin(newAngle));
-            transform.position = parentPos + (newDisance * scale); 
+            transform.position = parentPos + (newDisance * scale);
+            //commands[i] = new SpherecastCommand(transform.position, 0.8f, Vector3.zero, 0, 1 << 8);
         }
     }
+
+    /*struct CollisionJob : IJobParallelFor
+    {
+        [ReadOnly]
+        public NativeArray<RaycastHit> casts;
+        public NativeArray<bool> isActive;
+
+        public void Execute(int i)
+        {
+            Debug.Log(casts[i].point);
+            if (isActive[i] == false)
+                return;
+            if (casts[i].point != Vector3.zero)
+                isActive[i] = false;
+        }
+    }*/
+
 
     public IEnumerator SpawnPattern(BulletPattern pattern, Vector2 pos, Quaternion quaternion)
     {
@@ -79,10 +102,12 @@ public class BulletManager : MonoBehaviour
         float speed = 0;
         int j = 0, length = pattern.spawns.Count;
         currentBulletAmount += length;
-        Debug.Log(pattern.spawns.Count);
-        JobHandle PositionJobHandle;
         Transform[] temp = new Transform[length];
+        JobHandle PositionJobHandle; //CastJobHandle;
+        //NativeArray<RaycastHit> results = new NativeArray<RaycastHit>(length, Allocator.Persistent);
+        //NativeArray<SpherecastCommand> commands = new NativeArray<SpherecastCommand>(length, Allocator.Persistent);
         NativeArray<float> distance = new NativeArray<float>(length, Allocator.Persistent), angle = new NativeArray<float>(length, Allocator.Persistent);
+        NativeArray<bool> isActive = new NativeArray<bool>(length, Allocator.Persistent);
         foreach (SpawnData spawn in pattern.spawns)
         {
             float newRotate = vRotate + Vector2.SignedAngle(Vector2.right,spawn.position) * Mathf.Deg2Rad;
@@ -94,13 +119,15 @@ public class BulletManager : MonoBehaviour
             distance[j] = spawn.position.magnitude;
             angle[j] = newRotate - vRotate;
             temp[j] = newBullet.transform;
+            isActive[j] = true;
             j++;
         }
         TransformAccessArray transforms = new TransformAccessArray(temp);
         float tempRotate = vRotate;
+        int templength = length;
         while (timer <= 10)
         {
-            if (bullets.Count == 0)
+            if (length == 0)
                 break; 
             vRotate = tempRotate + pattern.vRotation.Evaluate(timer) * Mathf.Deg2Rad;
             speed = pattern.velocity.Evaluate(timer);
@@ -109,34 +136,66 @@ public class BulletManager : MonoBehaviour
             newDummy.transform.rotation = Quaternion.Euler(new Vector3(0, 0, selfRotate));
             PositionUpdateJob m_Job = new PositionUpdateJob()
             {
+                isActive = isActive,
                 distance = distance,
                 angle = angle,
                 scale = pattern.scale.Evaluate(timer),
                 parentPos = parent.position,
-                parentAngle = parent.rotation.eulerAngles.z * Mathf.Deg2Rad
+                parentAngle = parent.rotation.eulerAngles.z * Mathf.Deg2Rad,
+                //commands = commands
             };
             PositionJobHandle = m_Job.Schedule(transforms);
-            for (int i = 0; i < bullets.Count; i ++)
+            PositionJobHandle.Complete();
+            /*var handle = SpherecastCommand.ScheduleBatch(commands, results, templength);
+            handle.Complete();
+            CollisionJob m_collision = new CollisionJob()
             {
-                if (!bullets[i].activeSelf)
-                {
-                    bullets.Remove(bullets[i]);
-                    currentBulletAmount--;
-                    continue;
-                }
-            }
+                casts = results,
+                isActive = isActive
+            };
+            CastJobHandle = m_collision.Schedule(templength, 32);*/
             timer += Time.deltaTime;
             yield return null;
-            PositionJobHandle.Complete();
+            /*CastJobHandle.Complete();*/
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                if (isActive[i] && bullets[i].activeSelf)
+                {
+                    isActive[i] = circleCast(bullets[i], bullets[i].transform.position, 0.3f);
+                    length = (isActive[i] == false ? length - 1 : length);
+                }
+            }
         }
-        for (int i = 0; i < bullets.Count; i++)
+        if(length > 0)
         {
-            bullets[i].SetActive(false);
-            currentBulletAmount--;
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                if (bullets[i].activeSelf)
+                {
+                    bullets[i].SetActive(false);
+                    currentBulletAmount = Mathf.Max(currentBulletAmount - 1, 0);
+                }
+            }
         }
         Destroy(newDummy);
+        isActive.Dispose();
         transforms.Dispose();
         distance.Dispose();
         angle.Dispose();
+        /*commands.Dispose();
+        results.Dispose();*/
+    }
+
+    bool circleCast(GameObject go ,Vector2 pos, float radius)
+    {
+        RaycastHit2D hit = Physics2D.CircleCast(pos, radius, Vector2.zero, 0, 1 << 8);
+        if (hit.collider != null)
+        {
+            go.SetActive(false);
+            currentBulletAmount = Mathf.Max(currentBulletAmount - 1, 0);
+            return false;
+        }
+        else
+            return true;
     }
 }

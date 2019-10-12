@@ -128,3 +128,53 @@ MonoBehaviour:
     position: {x: 1, y: 0}
   - name: Enemy_Cicle
     position: {x: 2, y: 0}
+  - name: Enemy_Cicle
+    position: {x: 0, y: 2}
+  - name: Enemy_Cicle
+    position: {x: 0, y: 1}
+  - name: Enemy_Cicle
+    position: {x: 0, y: 0}
+  - name: Enemy_Cicle
+    position: {x: 0, y: -1}
+  - name: Enemy_Cicle
+    position: {x: 0, y: -2}
+  - name: Enemy_Cicle
+    position: {x: 4, y: 0}
+  - name: Enemy_Cicle
+    position: {x: 3.8042262, y: 1.236068}
+  - name: Enemy_Cicle
+    position: {x: 3.236068, y: 2.351141}
+  - name: Enemy_Cicle
+    position: {x: 2.3511412, y: 3.236068}
+  - name: Enemy_Cicle
+    position: {x: 1.2360679, y: 3.8042262}
+  - name: Enemy_Cicle
+    position: {x: -0.00000017484555, y: 4}
+  - name: Enemy_Cicle
+    position: {x: -1.2360678, y: 3.8042262}
+  - name: Enemy_Cicle
+    position: {x: -2.3511407, y: 3.236068}
+  - name: Enemy_Cicle
+    position: {x: -3.2360682, y: 2.3511407}
+  - name: Enemy_Cicle
+    position: {x: -3.804226, y: 1.2360681}
+  - name: Enemy_Cicle
+    position: {x: -4, y: -0.0000003496911}
+  - name: Enemy_Cicle
+    position: {x: -3.8042262, y: -1.2360679}
+  - name: Enemy_Cicle
+    position: {x: -3.2360682, y: -2.3511405}
+  - name: Enemy_Cicle
+    position: {x: -2.3511417, y: -3.2360673}
+  - name: Enemy_Cicle
+    position: {x: -1.2360684, y: -3.804226}
+  - name: Enemy_Cicle
+    position: {x: 0.000000047699523, y: -4}
+  - name: Enemy_Cicle
+    position: {x: 1.2360685, y: -3.804226}
+  - name: Enemy_Cicle
+    position: {x: 2.3511403, y: -3.2360685}
+  - name: Enemy_Cicle
+    position: {x: 3.2360678, y: -2.3511412}
+  - name: Enemy_Cicle
+    position: {x: 3.8042262, y: -1.2360678}
